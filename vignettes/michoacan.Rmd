@@ -8,18 +8,23 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(echo = F, 
+message = F,
+warning = F, 
+fig.asp = 0.8, 
+fig.width = 7, 
+out.width = "100%",
+dpi = 300,
+collapse = TRUE,
+comment = "#>"
+) 
 ```
 
 ```{r setup}
-#library(electoral)
+library(electoral)
 library(tidyverse)
-#bd <- read_csv("~/Downloads/michoacan_municipal_2018_casilla.csv")
-bd <- read_csv("~/Downloads/Presidencia_2018_casilla.csv")
-bd <- read_csv("~/Dropbox/Ciencia de datos/Consultoría Estadística/Recursos/Externos/INE/Bases de datos/2018/Federal/Presidencia_2018_casilla.csv")
+
+bd <- read_csv("~/Dropbox (Selva)/Ciencia de datos/Consultoría Estadística/Recursos/Externos/INE/Bases de datos/2018/Federal/Presidencia_2018_casilla.csv")
 bd <- filter(bd, NOMBRE_ESTADO=="MICHOACÁN")
 bd <- rename(bd, "nombre_edo"="NOMBRE_ESTADO", "edo"="ESTADO")
 info <- list()
@@ -98,5 +103,41 @@ info_secc <- preparar_info_de_eleccion(bd = bd,
                                   nombre_unidad_analisis = "Elección presidencial- Sección 411",
                                   colores = color)
 graficar_total_votacion(info_secc)
+
+```
+
+
+```{r}
+library(janitor)
+library(gt)
+
+
+inp <- "~/Downloads/datos_geolectorales"
+inegi <- st_read(paste(inp, "8e7d3ecce68a906de3f3f9b62bf55b81_geolectorales.shp", sep="/"), 
+                 stringsAsFactors = FALSE, quiet = TRUE) %>%
+  st_transform(4326) 
+load("~/Documents/Git/electoral/data/inegi_traduccion.rda")
+devtools::load_all(".")
+
+bd <- preparar_info_censo(inegi, 
+                          unidad_analisis="seccion", 
+                          id_unidad_analisis=411, 
+                          variable="psinder", 
+                          weight="pobtot")
+bd2 <-preparar_info_censo(inegi, 
+                          unidad_analisis="seccion", 
+                          id_unidad_analisis=411, 
+                          variable="vph_inter", 
+                          weight="tvivparhab")
+bd3 <- preparar_info_censo(inegi, 
+                          unidad_analisis="seccion", 
+                          id_unidad_analisis=411, 
+                          variable="vph_c_serv", 
+                          weight="tvivparhab")
+
+
+
+graficando_tabla(bd=bd, bd2=bd2, bd3=bd3, unidad_analisis="seccion")
+
 
 ```

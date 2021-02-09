@@ -71,3 +71,42 @@ votos_coalicion <- function(bd, partidos){
 }
 
 
+#' Title Info censo
+#'
+#' @param inegi Shapefile con información del censo por sección
+#' @param unidad_analisis Nivel cartográfico de interés
+#' @param id_unidad_analisis
+#' @param partidos
+#' @param partidos
+#' @return
+#' @export
+#'
+#' @examples
+preparar_info_censo <- function(inegi,
+                                unidad_analisis,
+                                id_unidad_analisis,
+                                variable,
+                                weight
+){
+  info <- inegi %>%
+    clean_names() %>%
+    select(unidad_analisis, variable, weight) %>%
+    as_tibble() %>%
+    select(-geometry) %>%
+    group_by(!!sym(unidad_analisis)) %>%
+    summarise(variable=sum(!!sym(variable), na.rm=T),
+              weight=sum(!!sym(weight), na.rm=T)) %>%
+    ungroup() %>%
+    mutate(Porcentaje=round((as.numeric(variable)/as.numeric(weight)), 4)) %>%
+    select(unidad_analisis, Porcentaje) %>%
+    arrange(-Porcentaje) %>%
+    transform(rank=match(Porcentaje, unique(Porcentaje))) %>%
+    mutate(Variable=variable,
+           numero=nrow(.),
+           Ranking=paste("Ranking", rank, "de", numero)) %>%
+    select(Variable, unidad_analisis, Porcentaje, Ranking) %>%
+    filter(!!sym(unidad_analisis)==id_unidad_analisis)
+
+  return(info)
+
+}
