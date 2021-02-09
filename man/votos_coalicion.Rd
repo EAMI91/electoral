@@ -7,7 +7,9 @@
 votos_coalicion(bd, partidos)
 }
 \arguments{
-\item{partidos}{}
+\item{bd}{Base de datos de votación.}
+
+\item{partidos}{Vector de partidos que se encuentran coaligados. No importa el orden.}
 }
 \value{
 

@@ -5,13 +5,19 @@
 \title{Title}
 \usage{
 graficar_mapa_ganadores(info, sf)
+
+graficar_mapa_ganadores(info, sf)
 }
 \arguments{
 \item{sf}{}
 }
 \value{
 
+
+
 }
 \description{
+Title
+
 Title
 }

@@ -2,16 +2,24 @@
 % Please edit documentation in R/graficas.R
 \name{graficar_fuerza_electoral}
 \alias{graficar_fuerza_electoral}
-\title{Title}
+\title{Title Gráfica en un mapa los resultados electorales por diferentes niveles de agregación.}
 \usage{
-graficar_fuerza_electoral(info, sf, analisis, interactiva = F)
+graficar_fuerza_electoral(info, sf, analisis, nivel, interactiva = F)
 }
 \arguments{
-\item{analisis}{}
+\item{info}{base de datos procesada con los votos para cada partido y cada coalición, dividida en secciones, distritos y estado.}
+
+\item{sf}{shapefile que se va a utilizar como la base del mapa}
+
+\item{analisis}{colición para la cual se va a graficar su distribución de votos}
+
+\item{nivel}{nivel cartográfico de interés para el mapa}
+
+\item{interactiva}{función lógico en la que F es un mapa fijo y V un mapa interactivo}
 }
 \value{
 
 }
 \description{
-Title
+Title Gráfica en un mapa los resultados electorales por diferentes niveles de agregación.
 }

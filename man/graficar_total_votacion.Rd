@@ -7,7 +7,7 @@
 graficar_total_votacion(info)
 }
 \arguments{
-\item{info}{}
+\item{info}{base de datos procesada con los votos para cada partido y cada coalición, dividida en secciones, distritos y estado.}
 }
 \value{
 

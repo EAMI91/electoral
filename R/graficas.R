@@ -491,3 +491,48 @@ graficar_correlacion_partidista <- function(partidos, info_base, info_contraste)
     facet_wrap(~partido1)
 }
 
+#' Title Graficar tablas INEGI
+#'
+#' @param bd base con información de la primera variable INEGI seleccionada
+#' @param bd2 base con información de la segunda variable INEGI seleccionada
+#' @param bd3 base con información de la tercera variable INEGI seleccionada
+#' @param unidad_analisis división cartográfica de interés
+#' @return
+#' @export
+#'
+#' @examples
+
+graficando_tabla <- function(bd,
+                             bd2,
+                             bd3,
+                             unidad_analisis
+
+){
+  final <- bind_rows(bd, bd2, bd3) %>%
+    left_join(inegi_traduccion) %>%
+    select(Indicador, unidad_analisis, Porcentaje, Ranking) %>%
+    mutate(loque=!!sym(unidad_analisis),
+           obs = paste(unidad_analisis, loque)) %>%
+    select(Indicador, obs, Porcentaje, Ranking)
+
+
+  gt_tbl <- gt(data = final %>% select(-obs))%>%
+    fmt_percent(
+      columns = vars(Porcentaje),
+      decimals = 2
+    )
+
+  tbl_bd <-
+    gt_tbl %>%
+    tab_header(
+      title = paste("Características socioeconómicas", unique(final$obs), sep=" "),
+      subtitle = "Fuente: Estadísticas Censales a Escalas Geoelectorales"
+    )
+
+
+  return(tbl_bd)
+
+}
+
+
+

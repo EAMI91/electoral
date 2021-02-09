@@ -2,3 +2,4 @@
 ^renv\.lock$
 ^electoral\.Rproj$
 ^\.Rproj\.user$
+^data-raw$
