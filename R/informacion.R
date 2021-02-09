@@ -91,8 +91,8 @@ preparar_info_censo <- function(inegi,
   info <- inegi %>%
     clean_names() %>%
     select(unidad_analisis, variable, weight) %>%
-    as_tibble() %>%
-    select(-geometry) %>%
+    # as_tibble() %>%
+    # select(-geometry) %>%
     group_by(!!sym(unidad_analisis)) %>%
     summarise(variable=sum(!!sym(variable), na.rm=T),
               weight=sum(!!sym(weight), na.rm=T)) %>%
