@@ -30,7 +30,8 @@ Imports:
     scales,
     stringr,
     ggplot2,
-    leaflet
+    leaflet,
+    gt
 URL: https://github.com/gorantesj/electoral
 BugReports: https://github.com/gorantesj/electoral/issues
 Depends: 

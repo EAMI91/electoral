@@ -235,17 +235,17 @@
     },
     "cpp11": {
       "Package": "cpp11",
-      "Version": "0.2.6",
+      "Version": "0.2.5",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "f08909ebdad90b19d8d3930da4220564"
+      "Hash": "8b9a10255e862eb99e38fa8b0caa6c0d"
     },
     "crayon": {
       "Package": "crayon",
-      "Version": "1.4.1",
+      "Version": "1.4.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "e75525c55c70e5f4f78c9960a4b402e9"
+      "Hash": "fcff9126a4928a96c94e3df85b024899"
     },
     "credentials": {
       "Package": "credentials",
@@ -382,17 +382,17 @@
     },
     "gert": {
       "Package": "gert",
-      "Version": "1.1.0",
+      "Version": "1.0.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "c637d042178a0f65f9703c8d7f2be996"
+      "Hash": "0ebdadbb2b742cd230cb3ec7fdf5898a"
     },
     "ggfittext": {
       "Package": "ggfittext",
-      "Version": "0.9.1",
+      "Version": "0.9.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "42aafda63a2012fb3b928fef01d96698"
+      "Hash": "1c658d36302cf96a331c0059587fae70"
     },
     "ggforce": {
       "Package": "ggforce",
@@ -533,13 +533,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "64778782a89480e9a644f69aad9a2877"
-    },
-    "janitor": {
-      "Package": "janitor",
-      "Version": "2.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "6de84a8c67fb247e721166049c84695f"
     },
     "jsonlite": {
       "Package": "jsonlite",
@@ -753,10 +746,10 @@
     },
     "rappdirs": {
       "Package": "rappdirs",
-      "Version": "0.3.3",
+      "Version": "0.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5e3c5dc0b071b21fa128676560dbe94d"
+      "Hash": "8c8298583adbbe76f3c2220eef71bebc"
     },
     "raster": {
       "Package": "raster",
@@ -890,13 +883,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "3a2cf5eecb2cbca814d01d56bfb51494"
-    },
-    "snakecase": {
-      "Package": "snakecase",
-      "Version": "0.11.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "4079070fc210c7901c0832a3aeab894f"
     },
     "sp": {
       "Package": "sp",

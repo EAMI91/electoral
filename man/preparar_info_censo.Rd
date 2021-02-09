@@ -2,7 +2,7 @@
 % Please edit documentation in R/informacion.R
 \name{preparar_info_censo}
 \alias{preparar_info_censo}
-\title{Title}
+\title{Title Info censo}
 \usage{
 preparar_info_censo(
   inegi,
@@ -21,5 +21,5 @@ preparar_info_censo(
 
 }
 \description{
-Title
+Title Info censo
 }
