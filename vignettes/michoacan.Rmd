@@ -116,8 +116,6 @@ inp <- "~/Downloads/datos_geolectorales"
 inegi <- st_read(paste(inp, "8e7d3ecce68a906de3f3f9b62bf55b81_geolectorales.shp", sep="/"), 
                  stringsAsFactors = FALSE, quiet = TRUE) %>%
   st_transform(4326) 
-load("~/Documents/Git/electoral/data/inegi_traduccion.rda")
-devtools::load_all(".")
 
 bd <- preparar_info_censo(inegi, 
                           unidad_analisis="seccion", 
