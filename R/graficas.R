@@ -477,16 +477,26 @@ fuerza_electoral_proxy <-
         mid = scales::rescale(mediana, from =
                                 c(0, maximo), to = c(0, 1))
       ))
-    pal <-
-      scales::colour_ramp(
-        c(
-          colortools::complementary(color = color, plot = F)[[2]],
-          "white",
-          color
-        ),
-        na.color = "grey30",
-        alpha = FALSE
-      )
+    # pal <-
+    #   scales::colour_ramp(
+    #     c(
+    #       colortools::complementary(color = color, plot = F)[[2]],
+    #       "white",
+    #       color
+    #     ),
+    #     na.color = "grey30",
+    #     alpha = FALSE
+    #   )
+    pal <- leaflet::colorNumeric(
+      palette = c(
+        colortools::complementary(color = color, plot = F)[[2]],
+        "white",
+        color
+      ),
+      domain = c(0, 1),
+      na.color = "grey30",
+      alpha = F
+    )
     mapa <- mapa %>% mutate(reescala = pal(reescala))
     if (!interactiva) {
       ggplot() +
