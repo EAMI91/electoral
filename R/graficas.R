@@ -298,14 +298,21 @@ graficar_fuerza_electoral <-
         ~ sum(.x, na.rm = T) / sum(nominal, na.rm = T)
       ))
     datos <- datos[is.finite(rowSums(datos)),]
-    referencias <- datos %>%
-      rowwise() %>%
-      mutate(maximos = max(c_across(starts_with("votos_")), na.rm = T)) %>%
-      ungroup() %>%
-      summarise(
-        maximo = max(maximos, na.rm = T),
-        mediana = quantile(maximos, na.rm = T, probs = .5)
-      )
+    # referencias <- datos %>%
+    #   rowwise() %>%
+    #   mutate(maximos = max(c_across(starts_with("votos_")), na.rm = T)) %>%
+    #   ungroup() %>%
+    #   summarise(
+    #     maximo = max(maximos, na.rm = T),
+    #     mediana = quantile(maximos, na.rm = T, probs = .5)
+    #   )
+    referencias <-
+      datos %>% summarise(maximo = max(c_across(glue::glue(
+        "votos_{analisis}"
+      ))),
+      mediana = quantile(c_across(glue::glue(
+        "votos_{analisis}"
+      )), na.rm = T, probs = .5))
     maximo <- referencias %>% pull(maximo)
     mediana <- referencias %>% pull(mediana)
     datos <-
@@ -313,37 +320,28 @@ graficar_fuerza_electoral <-
     sf <- sf %>% rename("{nivel}" := nivel_mapa)
     mapa <- sf %>% left_join(datos)
     mapa <- mapa %>%
-      mutate(reescala = scales::rescale_mid(
-        scales::rescale(
-          !!sym(glue::glue("votos_{analisis}")),
-          from = c(0, maximo),
-          to = c(0, 1)
+      mutate(reescala = #scales::rescale_mid(
+               scales::rescale(
+                 !!sym(glue::glue("votos_{analisis}")),
+                 from = c(0, maximo),
+                 to = c(0, 1)
+               )#,
+             #   from = c(0, 1),
+             #   to = c(0, 1),
+             #   mid = scales::rescale(mediana, from =
+             #                           c(0, maximo), to = c(0, 1))
+             # )
+      )
+    pal <-
+      scales::colour_ramp(
+        c(
+          colortools::complementary(color = color, plot = F)[[2]],
+          "white",
+          color
         ),
-        from = c(0, 1),
-        to = c(0, 1),
-        mid = scales::rescale(mediana, from =
-                                c(0, maximo), to = c(0, 1))
-      ))
-    # pal <-
-    #   scales::colour_ramp(
-    #     c(
-    #       colortools::complementary(color = color, plot = F)[[2]],
-    #       "white",
-    #       color
-    #     ),
-    #     na.color = "grey30",
-    #     alpha = FALSE
-    #   )
-    pal <- leaflet::colorNumeric(
-      palette = c(
-        colortools::complementary(color = color, plot = F)[[2]],
-        "white",
-        color
-      ),
-      domain = c(0, 1),
-      na.color = "grey30",
-      alpha = F
-    )
+        na.color = "grey30",
+        alpha = FALSE
+      )
     mapa <- mapa %>% mutate(reescala = pal(reescala))
     if (!interactiva) {
       ggplot() +
@@ -451,14 +449,21 @@ fuerza_electoral_proxy <-
         ~ sum(.x, na.rm = T) / sum(nominal, na.rm = T)
       ))
     datos <- datos[is.finite(rowSums(datos)),]
-    referencias <- datos %>%
-      rowwise() %>%
-      mutate(maximos = max(c_across(starts_with("votos_")), na.rm = T)) %>%
-      ungroup() %>%
-      summarise(
-        maximo = max(maximos, na.rm = T),
-        mediana = quantile(maximos, na.rm = T, probs = .5)
-      )
+    # referencias <- datos %>%
+    #   rowwise() %>%
+    #   mutate(maximos = max(c_across(starts_with("votos_")), na.rm = T)) %>%
+    #   ungroup() %>%
+    #   summarise(
+    #     maximo = max(maximos, na.rm = T),
+    #     mediana = quantile(maximos, na.rm = T, probs = .5)
+    #   )
+    referencias <-
+      datos %>% summarise(maximo = max(c_across(glue::glue(
+        "votos_{analisis}"
+      ))),
+      mediana = quantile(c_across(glue::glue(
+        "votos_{analisis}"
+      )), na.rm = T, probs = .5))
     maximo <- referencias %>% pull(maximo)
     mediana <- referencias %>% pull(mediana)
     datos <-
@@ -466,37 +471,25 @@ fuerza_electoral_proxy <-
     sf <- sf %>% rename("{nivel}" := nivel_mapa)
     mapa <- sf %>% left_join(datos)
     mapa <- mapa %>%
-      mutate(reescala = scales::rescale_mid(
-        scales::rescale(
-          !!sym(glue::glue("votos_{analisis}")),
-          from = c(0, maximo),
-          to = c(0, 1)
-        ),
-        from = c(0, 1),
-        to = c(0, 1),
-        mid = scales::rescale(mediana, from =
-                                c(0, maximo), to = c(0, 1))
-      ))
-    # pal <-
-    #   scales::colour_ramp(
-    #     c(
-    #       colortools::complementary(color = color, plot = F)[[2]],
-    #       "white",
-    #       color
-    #     ),
-    #     na.color = "grey30",
-    #     alpha = FALSE
-    #   )
-    pal <- leaflet::colorNumeric(
-      palette = c(
-        colortools::complementary(color = color, plot = F)[[2]],
+      mutate(reescala = #scales::rescale_mid(
+               scales::rescale(
+                 !!sym(glue::glue("votos_{analisis}")),
+                 from = c(0, maximo),
+                 to = c(0, 1)
+               )#,
+             # from = c(0, 1),
+             # to = c(0, 1),
+             # mid = scales::rescale(mediana, from =
+             #                         c(0, maximo), to = c(0, 1))
+             # )
+      )
+    pal <-
+      scales::colour_ramp(c(# colortools::complementary(color = color, plot = F)[[2]],
         "white",
-        color
-      ),
-      domain = c(0, 1),
-      na.color = "grey30",
-      alpha = F
-    )
+        color),
+        na.color = "grey30",
+        alpha = FALSE)
+
     mapa <- mapa %>% mutate(reescala = pal(reescala))
     if (!interactiva) {
       ggplot() +
