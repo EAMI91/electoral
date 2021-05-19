@@ -346,16 +346,13 @@ graficar_fuerza_electoral <-
     #     alpha = FALSE
     #   )
     # mapa <- mapa %>% mutate(reescala = pal(reescala))
-    pal <- leaflet::colorNumeric(
-      palette = c(
-        colortools::complementary(color = color, plot = F)[[2]],
-        "white",
-        color
-      ),
-      domain = c(minimo, mediana, maximo),
-      na.color = "grey30",
-      alpha = F
-    )
+    rampa <- colorRampPalette(c(
+      colortools::complementary(color = color, plot = F)[[2]],
+      "white",
+      color
+    ))
+    pal <- leaflet::colorQuantile(rampa(5),probs = c(0,.2,.4,.6,.8,1),domain = mapa[[analisis]],
+                                  na.color = "grey30",alpha = F)
     if (!interactiva) {
       ggplot() +
         geom_sf(
@@ -508,16 +505,13 @@ fuerza_electoral_proxy <-
     #     alpha = FALSE)
     #
     # mapa <- mapa %>% mutate(reescala = pal(reescala))
-    pal <- leaflet::colorNumeric(
-      palette = c(
-        colortools::complementary(color = color, plot = F)[[2]],
-        "white",
-        color
-      ),
-      domain = c(minimo, mediana, maximo),
-      na.color = "grey30",
-      alpha = F
-    )
+    rampa <- colorRampPalette(c(
+      colortools::complementary(color = color, plot = F)[[2]],
+      "white",
+      color
+    ))
+    pal <- leaflet::colorQuantile(rampa(5),probs = c(0,.2,.4,.6,.8,1),domain = mapa[[analisis]],
+                                  na.color = "grey30",alpha = F)
     if (!interactiva) {
       ggplot() +
         geom_sf(
