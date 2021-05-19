@@ -101,108 +101,109 @@ graficar_total_votacion <- function(info) {
 #' @export
 #'
 #' @examples
-graficar_total_comparativo <- function(info, analisis, mostrar = 7) {
-  color <- info$colores[analisis]
-  datos <- info$bd %>%
-    group_by(!!sym(info$unidad)) %>%
-    summarise(across(contains(analisis),
-                     ~ sum(.x, na.rm = T) / sum(nominal, na.rm = T)))
-  letrero <-
-    datos %>% mutate(
-      across(contains(analisis),  ~ rank(-.x), .names = "posicion"),
-      letrero = glue::glue("Lugar {posicion} de {max(posicion)}"),
-      orientacion = if_else(!!sym(glue::glue(
-        "votos_{analisis}"
-      )) > .1 * max(!!sym(
-        glue::glue("votos_{analisis}")
-      )), T, F)
-    )
-  referencia <-
-    letrero %>% filter(!!sym(info$unidad_analisis) == info$id_unidad_analisis) %>% pull(posicion)
-  letrero <-
-    letrero %>% filter(posicion >= (referencia - (mostrar - 1) / 2),
-                       posicion <= (referencia + (mostrar - 1) /
-                                      2))
-  letrero <- letrero %>%
-    mutate(unidad = stringr::str_replace(
-      stringr::str_to_sentence(stringr::str_to_upper(!!sym(info$unidad))),
-      "_",
-      replacement = " "
-    ))
-  letrero %>%
-    ggplot(aes(
-      x = reorder(unidad, !!sym(glue::glue(
-        "votos_{analisis}"
-      ))),
-      y = !!sym(glue::glue("votos_{analisis}")),
-      alpha = (!!sym(info$unidad_analisis) == info$id_unidad_analisis)
-    )) +
-    geom_bar(stat = "identity",
-             position = "dodge",
-             fill = color) +
-    geom_text(
-      data = letrero %>% filter(orientacion),
-      aes(label = letrero),
-      hjust = 1,
-      color = "white"
-    ) +
-    geom_text(
-      data = letrero %>% filter(!orientacion),
-      aes(label = letrero),
-      hjust = 0,
-      color = "black"
-    ) +
-    labs(
-      title = "Porcentaje de votos respecto a la lista nominal",
-      subtitle = glue::glue("{info$nombre_unidad_analisis} ({analisis})"),
-      x = stringr::str_replace(
-        string = stringr::str_to_sentence(stringr::str_to_upper(info$unidad_analisis)),
-        pattern = "_",
+graficar_total_comparativo <-
+  function(info, analisis, mostrar = 7) {
+    color <- info$colores[analisis]
+    datos <- info$bd %>%
+      group_by(!!sym(info$unidad)) %>%
+      summarise(across(contains(analisis),
+                       ~ sum(.x, na.rm = T) / sum(nominal, na.rm = T)))
+    letrero <-
+      datos %>% mutate(
+        across(contains(analisis),  ~ rank(-.x), .names = "posicion"),
+        letrero = glue::glue("Lugar {posicion} de {max(posicion)}"),
+        orientacion = if_else(!!sym(glue::glue(
+          "votos_{analisis}"
+        )) > .1 * max(!!sym(
+          glue::glue("votos_{analisis}")
+        )), T, F)
+      )
+    referencia <-
+      letrero %>% filter(!!sym(info$unidad_analisis) == info$id_unidad_analisis) %>% pull(posicion)
+    letrero <-
+      letrero %>% filter(posicion >= (referencia - (mostrar - 1) / 2),
+                         posicion <= (referencia + (mostrar - 1) /
+                                        2))
+    letrero <- letrero %>%
+      mutate(unidad = stringr::str_replace(
+        stringr::str_to_sentence(stringr::str_to_upper(!!sym(info$unidad))),
+        "_",
         replacement = " "
-      ),
-      y = "Porcentaje de votación",
-      caption = stringr::str_wrap(
-        glue::glue(
-          "Fuente: Elaborado por Morant Consultores con información de los Cómputos distritales {info$año_analisis} - INE"
+      ))
+    letrero %>%
+      ggplot(aes(
+        x = reorder(unidad,!!sym(glue::glue(
+          "votos_{analisis}"
+        ))),
+        y = !!sym(glue::glue("votos_{analisis}")),
+        alpha = (!!sym(info$unidad_analisis) == info$id_unidad_analisis)
+      )) +
+      geom_bar(stat = "identity",
+               position = "dodge",
+               fill = color) +
+      geom_text(
+        data = letrero %>% filter(orientacion),
+        aes(label = letrero),
+        hjust = 1,
+        color = "white"
+      ) +
+      geom_text(
+        data = letrero %>% filter(!orientacion),
+        aes(label = letrero),
+        hjust = 0,
+        color = "black"
+      ) +
+      labs(
+        title = "Porcentaje de votos respecto a la lista nominal",
+        subtitle = glue::glue("{info$nombre_unidad_analisis} ({analisis})"),
+        x = stringr::str_replace(
+          string = stringr::str_to_sentence(stringr::str_to_upper(info$unidad_analisis)),
+          pattern = "_",
+          replacement = " "
         ),
-        100
-      ),
-      fill = ""
-    ) +
-    scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
-    scale_alpha_manual(values = c(.5, 1)) +
-    coord_flip() +
-    theme_bw() +
-    theme(
-      text = element_text(color = "grey35"),
-      plot.title = element_text(
-        size = 15,
-        face = "bold",
-        color = "grey35"
-      ),
-      plot.subtitle = element_text(
-        size = 10,
-        face = "bold",
-        colour = "#666666"
-      ),
-      plot.caption = element_text(size = 10),
-      legend.position = "none",
-      panel.grid = element_blank(),
-      panel.border =   element_blank(),
-      axis.title = element_text(size = 14, face = "bold"),
-      axis.ticks.y = element_blank(),
-      axis.text = element_text(size = 10, face = "bold")
-    )
-  # theme(text = element_text(color = "grey35"),
-  #       plot.title = element_text(size = 15, face = "bold",  color = "grey35"),
-  #       plot.subtitle = element_text(size = 10, face = "bold", colour = "#666666"),
-  #       plot.caption = element_text(size = 10),
-  #       legend.position = "none",
-  #       axis.title = element_text(size = 14, face = "bold"),
-  #       axis.text = element_text(size = 10, face = "bold"))
+        y = "Porcentaje de votación",
+        caption = stringr::str_wrap(
+          glue::glue(
+            "Fuente: Elaborado por Morant Consultores con información de los Cómputos distritales {info$año_analisis} - INE"
+          ),
+          100
+        ),
+        fill = ""
+      ) +
+      scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
+      scale_alpha_manual(values = c(.5, 1)) +
+      coord_flip() +
+      theme_bw() +
+      theme(
+        text = element_text(color = "grey35"),
+        plot.title = element_text(
+          size = 15,
+          face = "bold",
+          color = "grey35"
+        ),
+        plot.subtitle = element_text(
+          size = 10,
+          face = "bold",
+          colour = "#666666"
+        ),
+        plot.caption = element_text(size = 10),
+        legend.position = "none",
+        panel.grid = element_blank(),
+        panel.border =   element_blank(),
+        axis.title = element_text(size = 14, face = "bold"),
+        axis.ticks.y = element_blank(),
+        axis.text = element_text(size = 10, face = "bold")
+      )
+    # theme(text = element_text(color = "grey35"),
+    #       plot.title = element_text(size = 15, face = "bold",  color = "grey35"),
+    #       plot.subtitle = element_text(size = 10, face = "bold", colour = "#666666"),
+    #       plot.caption = element_text(size = 10),
+    #       legend.position = "none",
+    #       axis.title = element_text(size = 14, face = "bold"),
+    #       axis.text = element_text(size = 10, face = "bold"))
 
 
-}
+  }
 
 
 
@@ -284,7 +285,7 @@ graficar_distibucion <- function(info = info,
 #' @examples
 graficar_fuerza_electoral <-
   function(info, sf, analisis, nivel, interactiva = F) {
-    browser()
+    # browser()
     nivel_mapa <- switch (nivel,
                           seccion = "SECCION", distrito = "DISTRITO_F")
     color <- info$colores[analisis]
@@ -296,7 +297,7 @@ graficar_fuerza_electoral <-
         glue::glue("votos_{info$competidores}"),
         ~ sum(.x, na.rm = T) / sum(nominal, na.rm = T)
       ))
-    datos <- datos[is.finite(rowSums(datos)), ]
+    datos <- datos[is.finite(rowSums(datos)),]
     referencias <- datos %>%
       rowwise() %>%
       mutate(maximos = max(c_across(starts_with("votos_")), na.rm = T)) %>%
@@ -323,16 +324,26 @@ graficar_fuerza_electoral <-
         mid = scales::rescale(mediana, from =
                                 c(0, maximo), to = c(0, 1))
       ))
-    pal <-
-      scales::colour_ramp(
-        c(
-          colortools::complementary(color = color, plot = F)[[2]],
-          "white",
-          color
-        ),
-        na.color = "grey30",
-        alpha = FALSE
-      )
+    # pal <-
+    #   scales::colour_ramp(
+    #     c(
+    #       colortools::complementary(color = color, plot = F)[[2]],
+    #       "white",
+    #       color
+    #     ),
+    #     na.color = "grey30",
+    #     alpha = FALSE
+    #   )
+    pal <- leaflet::colorNumeric(
+      palette = c(
+        colortools::complementary(color = color, plot = F)[[2]],
+        "white",
+        color
+      ),
+      domain = c(0, 1),
+      na.color = "grey30",
+      alpha = F
+    )
     mapa <- mapa %>% mutate(reescala = pal(reescala))
     if (!interactiva) {
       ggplot() +
@@ -439,7 +450,7 @@ fuerza_electoral_proxy <-
         glue::glue("votos_{info$competidores}"),
         ~ sum(.x, na.rm = T) / sum(nominal, na.rm = T)
       ))
-    datos <- datos[is.finite(rowSums(datos)), ]
+    datos <- datos[is.finite(rowSums(datos)),]
     referencias <- datos %>%
       rowwise() %>%
       mutate(maximos = max(c_across(starts_with("votos_")), na.rm = T)) %>%
@@ -763,7 +774,7 @@ graficar_correlacion_partidista <-
         plot.caption = element_text(size = 10),
         legend.position = "none"
       ) +
-      facet_wrap( ~ partido1)
+      facet_wrap(~ partido1)
   }
 
 #' Title Graficar tablas INEGI
