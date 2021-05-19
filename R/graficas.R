@@ -309,39 +309,53 @@ graficar_fuerza_electoral <-
       datos %>% summarise(maximo = max(c_across(glue::glue(
         "votos_{analisis}"
       ))),
+      minimo = min(c_across(glue::glue(
+        "votos_{analisis}"
+      ))),
       mediana = quantile(c_across(glue::glue(
         "votos_{analisis}"
       )), na.rm = T, probs = .5))
     maximo <- referencias %>% pull(maximo)
     mediana <- referencias %>% pull(mediana)
+    minimo <- referencias %>% pull(minimo)
     datos <-
       datos %>% select(!!sym(nivel), glue::glue("votos_{analisis}"))
     sf <- sf %>% rename("{nivel}" := nivel_mapa)
     mapa <- sf %>% left_join(datos)
-    mapa <- mapa %>%
-      mutate(reescala = #scales::rescale_mid(
-               scales::rescale(
-                 !!sym(glue::glue("votos_{analisis}")),
-                 from = c(0, maximo),
-                 to = c(0, 1)
-               )#,
-             #   from = c(0, 1),
-             #   to = c(0, 1),
-             #   mid = scales::rescale(mediana, from =
-             #                           c(0, maximo), to = c(0, 1))
-             # )
-      )
-    pal <-
-      scales::colour_ramp(
-        c(
-          colortools::complementary(color = color, plot = F)[[2]],
-          "white",
-          color
-        ),
-        na.color = "grey30",
-        alpha = FALSE
-      )
-    mapa <- mapa %>% mutate(reescala = pal(reescala))
+    # mapa <- mapa %>%
+    #   mutate(reescala = #scales::rescale_mid(
+    #            scales::rescale(
+    #              !!sym(glue::glue("votos_{analisis}")),
+    #              from = c(0, maximo),
+    #              to = c(0, 1)
+    #            )#,
+    #          #   from = c(0, 1),
+    #          #   to = c(0, 1),
+    #          #   mid = scales::rescale(mediana, from =
+    #          #                           c(0, maximo), to = c(0, 1))
+    #          # )
+    #   )
+    # pal <-
+    #   scales::colour_ramp(
+    #     c(
+    #       colortools::complementary(color = color, plot = F)[[2]],
+    #       "white",
+    #       color
+    #     ),
+    #     na.color = "grey30",
+    #     alpha = FALSE
+    #   )
+    # mapa <- mapa %>% mutate(reescala = pal(reescala))
+    pal <- leaflet::colorNumeric(
+      palette = c(
+        colortools::complementary(color = color, plot = F)[[2]],
+        "white",
+        color
+      ),
+      domain = c(minimo, mediana, maximo),
+      na.color = "grey30",
+      alpha = F
+    )
     if (!interactiva) {
       ggplot() +
         geom_sf(
@@ -390,7 +404,7 @@ graficar_fuerza_electoral <-
         leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron) %>%
         leaflet::addPolygons(
           data = mapa,
-          fillColor = ~ reescala,
+          fillColor = pal(mapa[[glue::glue("votos_{analisis}")]]),
           weight = 1,
           opacity = 1,
           color = "grey",
@@ -460,36 +474,50 @@ fuerza_electoral_proxy <-
       datos %>% summarise(maximo = max(c_across(glue::glue(
         "votos_{analisis}"
       ))),
+      minimo = min(c_across(glue::glue(
+        "votos_{analisis}"
+      ))),
       mediana = quantile(c_across(glue::glue(
         "votos_{analisis}"
       )), na.rm = T, probs = .5))
     maximo <- referencias %>% pull(maximo)
     mediana <- referencias %>% pull(mediana)
+    minimo <- referencias %>% pull(minimo)
     datos <-
       datos %>% select(!!sym(nivel), glue::glue("votos_{analisis}"))
     sf <- sf %>% rename("{nivel}" := nivel_mapa)
     mapa <- sf %>% left_join(datos)
-    mapa <- mapa %>%
-      mutate(reescala = #scales::rescale_mid(
-               scales::rescale(
-                 !!sym(glue::glue("votos_{analisis}")),
-                 from = c(0, maximo),
-                 to = c(0, 1)
-               )#,
-             # from = c(0, 1),
-             # to = c(0, 1),
-             # mid = scales::rescale(mediana, from =
-             #                         c(0, maximo), to = c(0, 1))
-             # )
-      )
-    pal <-
-      scales::colour_ramp(c(# colortools::complementary(color = color, plot = F)[[2]],
+    # mapa <- mapa %>%
+    #   mutate(reescala = #scales::rescale_mid(
+    #            scales::rescale(
+    #              !!sym(glue::glue("votos_{analisis}")),
+    #              from = c(0, maximo),
+    #              to = c(0, 1)
+    #            )#,
+    #          # from = c(0, 1),
+    #          # to = c(0, 1),
+    #          # mid = scales::rescale(mediana, from =
+    #          #                         c(0, maximo), to = c(0, 1))
+    #          # )
+    #   )
+    # pal <-
+    #   scales::colour_ramp(c(# colortools::complementary(color = color, plot = F)[[2]],
+    #     "white",
+    #     color),
+    #     na.color = "grey30",
+    #     alpha = FALSE)
+    #
+    # mapa <- mapa %>% mutate(reescala = pal(reescala))
+    pal <- leaflet::colorNumeric(
+      palette = c(
+        colortools::complementary(color = color, plot = F)[[2]],
         "white",
-        color),
-        na.color = "grey30",
-        alpha = FALSE)
-
-    mapa <- mapa %>% mutate(reescala = pal(reescala))
+        color
+      ),
+      domain = c(minimo, mediana, maximo),
+      na.color = "grey30",
+      alpha = F
+    )
     if (!interactiva) {
       ggplot() +
         geom_sf(
@@ -538,7 +566,7 @@ fuerza_electoral_proxy <-
       leaflet::addPolygons(
         map = proxy,
         data = mapa,
-        fillColor = ~ reescala,
+        fillColor = pal(mapa[[glue::glue("votos_{analisis}")]]),
         weight = 1,
         opacity = 1,
         color = "grey",
