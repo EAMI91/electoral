@@ -285,7 +285,6 @@ graficar_distibucion <- function(info = info,
 #' @examples
 graficar_fuerza_electoral <-
   function(info, sf, analisis, nivel, interactiva = F) {
-    # browser()
     nivel_mapa <- switch (nivel,
                           seccion = "SECCION", distrito = "DISTRITO_F")
     color <- info$colores[analisis]
